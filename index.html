@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Feliz cumple, Valen</title>
+  <meta name="description" content="Algo preparado para vos, Valen. Feliz vuelta al sol — de Diego, Fede y Alan.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+
+  <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body class="is-locked">
+
+  <!-- ====== AUDIO: subí tu MP3 a /audio/cumple.mp3 ====== -->
+  <audio id="bg-audio" src="/audio/cumple.mp3" loop preload="none"></audio>
+
+  <!-- Capa de globos (se generan al abrir) -->
+  <div id="balloon-layer" class="balloon-layer"></div>
+
+  <!-- ============ GATE DE ENTRADA ============ -->
+  <div id="gate" class="gate">
+    <div class="gate__eyebrow">Algo preparado para vos</div>
+    <div class="gate__name">Valen</div>
+    <div class="gate__sub">Subí el volumen. Cuando estés lista, tocá el botón y dejá que pase.</div>
+    <button id="gate-btn" class="btn-cta gate__btn" type="button">Abrir 🤍</button>
+  </div>
+
+  <!-- ============ CONTROL DE MÚSICA ============ -->
+  <button id="music-toggle" class="music" type="button" hidden>
+    <span class="music__on"><span class="music__dot music__dot--on"></span>Música</span>
+    <span class="music__off" hidden><span class="music__dot music__dot--off"></span>Silencio</span>
+  </button>
+
+  <div class="page">
+
+    <!-- ============ HERO ============ -->
+    <section data-reveal class="hero">
+      <div class="hero__haze"></div>
+      <div class="hero__date">30 · junio · feliz vuelta al sol</div>
+      <h1 class="hero__title">
+        <span class="hero__line1">
+          <span data-hero-word class="hero__word hero__word--gap">Feliz</span><span data-hero-word class="hero__word">cumple,</span>
+        </span>
+        <span data-hero-word class="hero__word hero__name">Valen</span>
+      </h1>
+      <div class="hero__scroll">
+        <span class="hero__scroll-label">deslizá para ver más</span>
+        <span class="hero__scroll-arrow">↓</span>
+      </div>
+    </section>
+
+    <!-- ============ DEDICATORIA ============ -->
+    <!-- ✏️ EDITÁ ACÁ tu mensaje personal -->
+    <section data-reveal class="dedication">
+      <div class="dedication__inner">
+        <div class="eyebrow">Para vos</div>
+        <p class="dedication__text">
+          <span class="dedication__hi">Feliz cumple, amigaa!!</span> Te armamos esto entre los tres porque un "feliz cumple" por WhatsApp nos parecía poco para vos. Gracias por ser así, por el aguante de siempre y por bancarnos en todas. Que tengas un hermoso día <span class="dedication__heart">♥</span>. Te queremos un montón.
+        </p>
+        <div class="dedication__sign">— Diego, Fede y Alan</div>
+      </div>
+    </section>
+
+    <!-- ============ GALERÍA (masonry + lightbox) ============ -->
+    <!-- 🖼️ Reemplazá cada placeholder por <img src="/img/foto-01.jpg"> -->
+    <section data-reveal class="gallery">
+      <div class="gallery__head">
+        <div class="eyebrow">Momentos</div>
+        <h2 class="gallery__title">Un poco de todo lo lindo</h2>
+      </div>
+      <div class="gallery__grid">
+        <div class="card" style="height:340px" data-src="/img/foto-01.jpg"><img src="/img/foto-01.jpg" alt="Un momento lindo 01" loading="lazy"></div>
+        <div class="card" style="height:300px" data-src="/img/foto-02.jpg"><img src="/img/foto-02.jpg" alt="Un momento lindo 02" loading="lazy"></div>
+        <div class="card" style="height:360px" data-src="/img/foto-03.jpg"><img src="/img/foto-03.jpg" alt="Un momento lindo 03" loading="lazy"></div>
+        <div class="card" style="height:230px" data-src="/img/foto-04.jpg"><img src="/img/foto-04.jpg" alt="Un momento lindo 04" loading="lazy"></div>
+        <div class="card" style="height:330px" data-src="/img/foto-05.jpg"><img src="/img/foto-05.jpg" alt="Un momento lindo 05" loading="lazy"></div>
+        <div class="card" style="height:300px" data-src="/img/foto-06.jpg"><img src="/img/foto-06.jpg" alt="Un momento lindo 06" loading="lazy"></div>
+        <div class="card" style="height:320px" data-src="/img/foto-07.jpg"><img src="/img/foto-07.jpg" alt="Un momento lindo 07" loading="lazy"></div>
+        <div class="card" style="height:310px" data-src="/img/foto-08.jpg"><img src="/img/foto-08.jpg" alt="Un momento lindo 08" loading="lazy"></div>
+      </div>
+    </section>
+
+    <!-- ============ VIDEO (opcional) ============ -->
+    <!-- 🎬 Para activar: reemplazá el placeholder por tu <iframe> o <video>. -->
+    <section data-reveal class="video">
+      <div class="video__inner">
+        <div class="eyebrow">Un video para vos</div>
+        <div class="video__frame video__frame--portrait">
+          <video controls playsinline preload="metadata"
+                 style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+            <source src="/video/cumple.mp4" type="video/mp4">
+            Tu navegador no puede reproducir el video.
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CIERRE ============ -->
+    <section data-reveal class="closing">
+      <p class="closing__text">Que sea un año tan lindo como vos lo hacés todo.</p>
+      <button id="repeat-btn" class="btn-cta closing__btn" type="button">repetir la magia ✦</button>
+      <div class="closing__footer">hecho con cariño · verde agua</div>
+    </section>
+
+  </div>
+
+  <!-- ============ LIGHTBOX ============ -->
+  <div id="lightbox" class="lightbox" hidden>
+    <img id="lightbox-img" class="lightbox__img" src="" alt="Foto ampliada">
+    <button id="lightbox-close" class="lightbox__close" type="button">✕</button>
+  </div>
+
+</body>
+</html>

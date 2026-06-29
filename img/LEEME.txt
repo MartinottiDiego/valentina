@@ -1,0 +1,18 @@
+Poné acá tus 7 fotos con estos nombres exactos:
+
+  foto-01.jpg
+  foto-02.jpg
+  foto-03.jpg
+  foto-04.jpg
+  foto-05.jpg
+  foto-06.jpg
+  foto-07.jpg
+
+Mientras no estén, la galería muestra placeholders con franjas (eso es esperado).
+
+Para que se vean las fotos reales, en index.html reemplazá cada <div class="card ..."> por algo así:
+
+  <div class="card" style="height:280px" data-label="foto 01">
+    <img src="/img/foto-01.jpg" alt="foto 01"
+         style="width:100%;height:100%;object-fit:cover;display:block">
+  </div>

@@ -1,0 +1,522 @@
+/* ===================================================================
+   Feliz cumple, Valen — estilos
+   Tokens: crema #F4F0E6 · tinta #16443D · teal #2E8C7A · verde agua #7FD4C1
+   Display: Cormorant Garamond · UI: Hanken Grotesk · easing: cubic-bezier(.2,.7,.2,1)
+   =================================================================== */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #F4F0E6;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background: #F4F0E6;
+  color: #16443D;
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+::selection { background: #7FD4C1; color: #10362F; }
+
+/* Mientras el gate está abierto, no hay scroll: se entra tocando "Abrir" */
+body.is-locked { overflow: hidden; height: 100vh; height: 100dvh; }
+
+/* ===== Eyebrow / label reutilizable ===== */
+.eyebrow {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: #2E8C7A;
+  font-weight: 600;
+}
+
+/* ===== Botón CTA (gradiente) ===== */
+.btn-cta {
+  cursor: pointer;
+  border: none;
+  border-radius: 999px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 600;
+  color: #FBF9F3;
+  background: linear-gradient(135deg, #2E8C7A, #16443D);
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), filter .35s;
+}
+@media (hover: hover) {
+  .btn-cta:hover { transform: translateY(-3px) scale(1.03); filter: brightness(1.08); }
+}
+/* En táctil, feedback al presionar */
+.btn-cta:active { transform: translateY(-1px) scale(.99); filter: brightness(1.04); }
+
+/* ===================================================================
+   GATE DE ENTRADA
+   =================================================================== */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(24px, 6vw, 40px);
+  background: radial-gradient(120% 90% at 50% 18%, #FBF9F3 0%, #EAF4F0 55%, #DCEFE8 100%);
+  transition: opacity .8s ease;
+  /* Si la pantalla es muy baja (móvil horizontal), que se pueda hacer scroll
+     dentro del gate en vez de cortar el botón. */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.gate.is-hidden { opacity: 0; pointer-events: none; }
+
+.gate__eyebrow {
+  animation: gateUp .8s cubic-bezier(.2,.7,.2,1) .05s both;
+  font-size: 12px;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: #2E8C7A;
+  font-weight: 600;
+  margin-bottom: 22px;
+}
+.gate__name {
+  animation: gateUp 1s cubic-bezier(.2,.7,.2,1) .18s both;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(64px, 18vw, 150px);
+  line-height: .92;
+  color: #16443D;
+}
+.gate__sub {
+  animation: gateUp .8s cubic-bezier(.2,.7,.2,1) .34s both;
+  max-width: 300px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #4b6f67;
+  margin: 24px 0 36px;
+}
+.gate__btn {
+  animation: gateGlow 3.4s ease-in-out infinite, gateUp .8s cubic-bezier(.2,.7,.2,1) .48s both;
+  padding: 18px 40px;
+  font-size: 16px;
+  letter-spacing: .01em;
+}
+
+/* ===================================================================
+   CONTROL DE MÚSICA
+   =================================================================== */
+.music {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 40;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(22,68,61,.14);
+  border-radius: 999px;
+  padding: 11px 17px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #16443D;
+  background: rgba(251,249,243,.82);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 20px rgba(22,68,61,.12);
+  transition: transform .3s, background .3s;
+}
+@media (hover: hover) {
+  .music:hover { transform: translateY(-2px); background: rgba(251,249,243,.96); }
+}
+.music__on, .music__off { display: flex; align-items: center; gap: 9px; }
+.music__off { opacity: .65; }
+.music__dot { width: 8px; height: 8px; border-radius: 50%; }
+.music__dot--on { background: #2E8C7A; box-shadow: 0 0 0 4px rgba(127,212,193,.35); }
+.music__dot--off { background: #9aa8a4; }
+
+/* ===================================================================
+   HERO
+   =================================================================== */
+.hero {
+  position: relative;
+  z-index: 3;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(64px, 12vh, 90px) 24px clamp(48px, 9vh, 70px);
+  overflow: hidden;
+}
+.hero__haze {
+  position: absolute;
+  top: -12%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(900px, 120vw);
+  height: 70vh;
+  background: radial-gradient(closest-side, rgba(127,212,193,.45), rgba(127,212,193,0));
+  filter: blur(8px);
+  animation: haze 14s ease-in-out infinite;
+  pointer-events: none;
+}
+.hero__date {
+  position: relative;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: #2E8C7A;
+  font-weight: 600;
+  margin-bottom: 26px;
+}
+.hero__title {
+  position: relative;
+  margin: 0;
+  max-width: 100%;
+  font-family: 'Cormorant Garamond', serif;
+  line-height: .9;
+  color: #16443D;
+}
+.hero__line1 {
+  display: block;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(34px, 9vw, 76px);
+  color: #2E8C7A;
+}
+.hero__word { display: inline-block; opacity: 1; }
+.hero__word--gap { margin-right: .18em; }
+.hero__name {
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(96px, 30vw, 260px);
+  letter-spacing: -.01em;
+  margin-top: .02em;
+}
+.hero__scroll {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 54px;
+  color: #4b6f67;
+}
+.hero__scroll-label { font-size: 13px; letter-spacing: .06em; }
+.hero__scroll-arrow {
+  display: inline-block;
+  font-size: 18px;
+  animation: scrollHint 1.8s ease-in-out infinite;
+}
+
+/* ===================================================================
+   DEDICATORIA
+   =================================================================== */
+.dedication {
+  position: relative;
+  z-index: 3;
+  padding: clamp(70px, 12vw, 140px) 24px;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(180deg, #F4F0E6 0%, #EFF6F2 100%);
+}
+.dedication__inner { max-width: 760px; text-align: center; }
+.dedication .eyebrow { margin-bottom: 34px; }
+.dedication__text {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 500;
+  font-size: clamp(25px, 4.4vw, 42px);
+  line-height: 1.42;
+  color: #16443D;
+  text-wrap: pretty;
+}
+.dedication__hi { font-style: italic; color: #2E8C7A; }
+.dedication__heart { color: #E2A38F; }
+.dedication__sign {
+  margin-top: 40px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(20px, 3vw, 28px);
+  color: #4b6f67;
+}
+
+/* ===================================================================
+   GALERÍA (masonry + lightbox)
+   =================================================================== */
+.gallery {
+  position: relative;
+  z-index: 3;
+  padding: clamp(60px, 10vw, 120px) clamp(18px, 5vw, 64px);
+}
+.gallery__head { text-align: center; margin-bottom: clamp(34px, 6vw, 60px); }
+.gallery .eyebrow { margin-bottom: 14px; }
+.gallery__title {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(36px, 7vw, 64px);
+  color: #16443D;
+}
+.gallery__grid {
+  max-width: 1080px;
+  margin: 0 auto;
+  column-width: 230px;
+  column-gap: 18px;
+}
+.card {
+  width: 100%;
+  margin: 0 0 18px;
+  break-inside: avoid;
+  display: inline-block;
+  cursor: zoom-in;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  /* fondo verde agua mientras la imagen carga */
+  background: repeating-linear-gradient(135deg, #bfe7dd 0 10px, #a9ddd0 10px 20px);
+  transition: transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s;
+}
+@media (hover: hover) {
+  .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(22,68,61,.18); }
+}
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ===================================================================
+   VIDEO
+   =================================================================== */
+.video {
+  position: relative;
+  z-index: 3;
+  padding: clamp(50px, 9vw, 110px) 24px;
+  display: flex;
+  justify-content: center;
+}
+.video__inner { width: 100%; max-width: 860px; text-align: center; }
+.video .eyebrow { margin-bottom: 28px; }
+.video__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  border-radius: 18px;
+  overflow: hidden;
+  background: radial-gradient(120% 120% at 50% 30%, #EAF4F0, #cfe9e1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border: 1px solid rgba(46,140,122,.18);
+}
+/* Video vertical (grabado con el celu): marco retrato centrado */
+.video__frame--portrait {
+  aspect-ratio: 9 / 16;
+  max-width: min(360px, 78vw);
+}
+.video__play {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(251,249,243,.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(22,68,61,.16);
+}
+.video__triangle {
+  margin-left: 5px;
+  border-style: solid;
+  border-width: 11px 0 11px 18px;
+  border-color: transparent transparent transparent #2E8C7A;
+}
+.video__cap {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 12px;
+  color: #3a5f58;
+}
+
+/* ===================================================================
+   CIERRE
+   =================================================================== */
+.closing {
+  position: relative;
+  z-index: 3;
+  padding: clamp(70px, 12vw, 150px) 24px clamp(90px, 14vw, 160px);
+  text-align: center;
+  background: linear-gradient(180deg, #EFF6F2 0%, #DCEFE8 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.closing__text {
+  margin: 0;
+  max-width: 620px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(28px, 5.4vw, 52px);
+  line-height: 1.25;
+  color: #16443D;
+  text-wrap: pretty;
+}
+.closing__btn {
+  margin-top: 46px;
+  padding: 17px 38px;
+  font-size: 15px;
+  box-shadow: 0 12px 30px rgba(22,68,61,.18);
+}
+.closing__footer {
+  margin-top: 60px;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: #6b8a83;
+}
+
+/* ===================================================================
+   LIGHTBOX
+   =================================================================== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background: rgba(16,54,47,.82);
+  backdrop-filter: blur(8px);
+  cursor: zoom-out;
+  animation: lightboxIn .3s ease both;
+}
+.lightbox[hidden] { display: none; }
+.lightbox__img {
+  display: block;
+  max-width: min(90vw, 720px);
+  max-height: 86vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 18px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.4);
+  background: #10362F;
+}
+.lightbox__close {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #16443D;
+  background: rgba(251,249,243,.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===================================================================
+   CAPA DE GLOBOS
+   =================================================================== */
+.balloon-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ===================================================================
+   KEYFRAMES
+   =================================================================== */
+@keyframes heroRise {
+  0% { transform: translateY(26px) scale(.97); }
+  100% { transform: translateY(0) scale(1); }
+}
+@keyframes floatUp {
+  0% { transform: translateY(0) translateX(0) rotate(-3deg); }
+  50% { transform: translateY(-55vh) translateX(var(--sway, 10px)) rotate(3deg); }
+  100% { transform: translateY(-128vh) translateX(0) rotate(-2deg); opacity: .78; }
+}
+@keyframes gateUp {
+  0% { transform: translateY(16px); }
+  100% { transform: translateY(0); }
+}
+@keyframes gateGlow {
+  0%, 100% { box-shadow: 0 12px 32px rgba(22,68,61,.16); }
+  50% { box-shadow: 0 16px 48px rgba(46,140,122,.34); }
+}
+@keyframes scrollHint {
+  0%, 100% { transform: translateY(0); opacity: .45; }
+  50% { transform: translateY(7px); opacity: .95; }
+}
+@keyframes haze {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(3%,-2%) scale(1.08); }
+}
+@keyframes lightboxIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ===================================================================
+   RESPONSIVE — ajustes por encima de lo que ya resuelve clamp()
+   =================================================================== */
+
+/* Pantallas MUY angostas (móviles chicos, ~320px): que nada desborde */
+@media (max-width: 360px) {
+  .hero__name { font-size: clamp(80px, 26vw, 110px); }
+  .gate__name { font-size: clamp(56px, 17vw, 90px); }
+  .music { bottom: 14px; right: 14px; padding: 10px 15px; }
+}
+
+/* Móvil/tablet en HORIZONTAL o cualquier pantalla muy baja:
+   el hero y el gate priorizan caber a lo alto antes que el tamaño máximo. */
+@media (max-height: 560px) and (orientation: landscape) {
+  .hero { min-height: 100dvh; padding: 56px 24px 40px; }
+  .hero__date { margin-bottom: 14px; }
+  .hero__line1 { font-size: clamp(28px, 6vh, 56px); }
+  .hero__name { font-size: clamp(64px, 22vh, 150px); }
+  .hero__scroll { margin-top: 24px; }
+  .gate { justify-content: flex-start; padding-top: 28px; padding-bottom: 28px; }
+  .gate__name { font-size: clamp(48px, 22vh, 110px); }
+  .gate__sub { margin: 16px 0 22px; }
+}
+
+/* Pantallas grandes (desktop/4K): topear el ancho del contenido y la galería
+   para que no quede todo demasiado disperso. */
+@media (min-width: 1600px) {
+  .gallery__grid { max-width: 1240px; column-width: 260px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}

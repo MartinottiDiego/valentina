@@ -1,0 +1,6 @@
+Poné acá tu canción con este nombre exacto:
+
+  cumple.mp3
+
+Mientras no esté, la página funciona igual (confeti, globos, todo),
+solo que no sonará música al tocar "Abrir 🤍".

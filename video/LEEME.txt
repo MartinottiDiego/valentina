@@ -1,0 +1,10 @@
+Arrastrá tu video acá con este nombre exacto:
+
+  cumple.mp4
+
+(El HTML ya está apuntando a /video/cumple.mp4)
+
+Si tu archivo tiene otro nombre o formato (ej: .mov, .webm), o lo renombrás a
+cumple.mp4, o cambiás la línea <source src="/video/cumple.mp4" ...> en index.html.
+
+Tip: el .mp4 con códec H.264 es el que se ve en todos los dispositivos (celu, PC, iPhone).

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#F4F0E6}
+::selection{background:#7FD4C1;color:#10362F}
+@keyframes heroBlur{0%{filter:blur(14px);transform:translateY(26px) scale(.96)}55%{filter:blur(0)}100%{filter:blur(0);transform:translateY(0) scale(1)}}
+@keyframes heroRise{0%{transform:translateY(26px) scale(.97)}100%{transform:translateY(0) scale(1)}}
+@keyframes floatUp{0%{transform:translateY(0) translateX(0) rotate(-3deg)}50%{transform:translateY(-55vh) translateX(var(--sway,10px)) rotate(3deg)}100%{transform:translateY(-128vh) translateX(0) rotate(-2deg);opacity:.78}}
+@keyframes gateUp{0%{transform:translateY(16px)}100%{transform:translateY(0)}}
+@keyframes gateGlow{0%,100%{box-shadow:0 12px 32px rgba(22,68,61,.16)}50%{box-shadow:0 16px 48px rgba(46,140,122,.34)}}
+@keyframes scrollHint{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(7px);opacity:.95}}
+@keyframes haze{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(3%,-2%) scale(1.08)}}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</helmet>
+
+<div style="position:relative;min-height:100vh;overflow-x:hidden;background:#F4F0E6;color:#16443D;font-family:'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
+
+  <!-- ====== AUDIO: subí tu MP3 a /audio/cumple.mp3 y listo (no incluyo audio) ====== -->
+  <audio id="bg-audio" src="/audio/cumple.mp3" loop preload="none"></audio>
+
+  <!-- Capa de globos (se generan al abrir) -->
+  <div id="balloon-layer" style="position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden"></div>
+
+  <!-- ============ GATE DE ENTRADA ============ -->
+  <sc-if value="{{ showGate }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;background:radial-gradient(120% 90% at 50% 18%, #FBF9F3 0%, #EAF4F0 55%, #DCEFE8 100%)">
+      <div style="animation:gateUp .8s cubic-bezier(.2,.7,.2,1) .05s both;font-family:'Hanken Grotesk',sans-serif;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:#2E8C7A;font-weight:600;margin-bottom:22px">Algo preparado para vos</div>
+      <div style="animation:gateUp 1s cubic-bezier(.2,.7,.2,1) .18s both;font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:clamp(64px,18vw,150px);line-height:.92;color:#16443D">Valen</div>
+      <div style="animation:gateUp .8s cubic-bezier(.2,.7,.2,1) .34s both;max-width:300px;font-size:15px;line-height:1.6;color:#4b6f67;margin:24px 0 36px">Subí el volumen. Cuando estés lista, tocá el botón y dejá que pase.</div>
+      <button onClick="{{ open }}" style="animation:gateGlow 3.4s ease-in-out infinite, gateUp .8s cubic-bezier(.2,.7,.2,1) .48s both;cursor:pointer;border:none;border-radius:999px;padding:18px 40px;font-family:'Hanken Grotesk',sans-serif;font-size:16px;font-weight:600;letter-spacing:.01em;color:#FBF9F3;background:linear-gradient(135deg,#2E8C7A,#16443D);transition:opacity .8s ease,transform .35s cubic-bezier(.2,.7,.2,1),filter .35s" style-hover="transform:translateY(-3px) scale(1.03);filter:brightness(1.08)">Abrir 🤍</button>
+    </div>
+  </sc-if>
+
+  <!-- ============ CONTROL DE MÚSICA ============ -->
+  <sc-if value="{{ opened }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ toggleMute }}" style="position:fixed;bottom:20px;right:20px;z-index:40;cursor:pointer;display:flex;align-items:center;gap:9px;border:1px solid rgba(22,68,61,.14);border-radius:999px;padding:11px 17px;font-family:'Hanken Grotesk',sans-serif;font-size:13px;font-weight:600;color:#16443D;background:rgba(251,249,243,.82);backdrop-filter:blur(10px);box-shadow:0 6px 20px rgba(22,68,61,.12);transition:transform .3s,background .3s" style-hover="transform:translateY(-2px);background:rgba(251,249,243,.96)">
+      <sc-if value="{{ notMuted }}" hint-placeholder-val="{{ true }}"><span style="display:flex;align-items:center;gap:9px"><span style="width:8px;height:8px;border-radius:50%;background:#2E8C7A;box-shadow:0 0 0 4px rgba(127,212,193,.35)"></span>Música</span></sc-if>
+      <sc-if value="{{ muted }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:9px;opacity:.65"><span style="width:8px;height:8px;border-radius:50%;background:#9aa8a4"></span>Silencio</span></sc-if>
+    </button>
+  </sc-if>
+
+  <!-- ============ HERO ============ -->
+  <section data-reveal style="position:relative;z-index:3;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 24px 70px;overflow:hidden">
+    <div style="position:absolute;top:-12%;left:50%;transform:translateX(-50%);width:min(900px,120vw);height:70vh;background:radial-gradient(closest-side, rgba(127,212,193,.45), rgba(127,212,193,0));filter:blur(8px);animation:haze 14s ease-in-out infinite;pointer-events:none"></div>
+    <div style="position:relative;font-family:'Hanken Grotesk',sans-serif;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:#2E8C7A;font-weight:600;margin-bottom:26px">30 · junio · feliz vuelta al sol</div>
+    <h1 style="position:relative;margin:0;font-family:'Cormorant Garamond',serif;line-height:.9;color:#16443D">
+      <span style="display:block;font-style:italic;font-weight:500;font-size:clamp(34px,9vw,76px);color:#2E8C7A">
+        <span data-hero-word style="display:inline-block;opacity:1;margin-right:.18em">Feliz</span><span data-hero-word style="display:inline-block;opacity:1">cumple,</span>
+      </span>
+      <span data-hero-word style="display:inline-block;opacity:1;font-style:italic;font-weight:600;font-size:clamp(96px,30vw,260px);letter-spacing:-.01em;margin-top:.02em">Valen</span>
+    </h1>
+    <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:54px;color:#4b6f67">
+      <span style="font-size:13px;letter-spacing:.06em">deslizá para ver más</span>
+      <span style="display:inline-block;font-size:18px;animation:scrollHint 1.8s ease-in-out infinite">↓</span>
+    </div>
+  </section>
+
+  <!-- ============ DEDICATORIA ============ -->
+  <!-- ✏️ EDITÁ ACÁ tu mensaje personal (texto de ejemplo) -->
+  <section data-reveal style="position:relative;z-index:3;padding:clamp(70px,12vw,140px) 24px;display:flex;justify-content:center;background:linear-gradient(180deg,#F4F0E6 0%,#EFF6F2 100%)">
+    <div style="max-width:760px;text-align:center">
+      <div style="font-family:'Hanken Grotesk',sans-serif;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:#2E8C7A;font-weight:600;margin-bottom:34px">Para vos</div>
+      <p style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(25px,4.4vw,42px);line-height:1.42;color:#16443D;text-wrap:pretty">
+        <span style="font-style:italic;color:#2E8C7A">Feliz cumple, amigaa!!</span> Te armamos esto entre los tres porque un "feliz cumple" por WhatsApp nos parecía poco para vos. Gracias por ser así, por el aguante de siempre y por bancarnos en todas. Que tengas un hermoso día <span style="color:#E2A38F">♥</span>. Te queremos un montón.
+      </p>
+      <div style="margin-top:40px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(20px,3vw,28px);color:#4b6f67">— Diego, Fede y Alan</div>
+    </div>
+  </section>
+
+  <!-- ============ GALERÍA (masonry + lightbox) ============ -->
+  <!-- 🖼️ Reemplazá cada placeholder por <img src="/img/foto-01.jpg"> (carpeta /img) -->
+  <section data-reveal style="position:relative;z-index:3;padding:clamp(60px,10vw,120px) clamp(18px,5vw,64px)">
+    <div style="text-align:center;margin-bottom:clamp(34px,6vw,60px)">
+      <div style="font-family:'Hanken Grotesk',sans-serif;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:#2E8C7A;font-weight:600;margin-bottom:14px">Momentos</div>
+      <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:clamp(36px,7vw,64px);color:#16443D">Un poco de todo lo lindo</h2>
+    </div>
+    <div style="max-width:1080px;margin:0 auto;column-width:230px;column-gap:18px">
+      <div onClick="{{ openLightbox }}" data-label="foto 01" data-tone="#7FD4C1" style="width:100%;height:280px;margin:0 0 18px;break-inside:avoid;display:inline-block;cursor:zoom-in;border-radius:14px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,#bfe7dd 0 10px,#a9ddd0 10px 20px);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s" style-hover="transform:translateY(-4px);box-shadow:0 18px 40px rgba(22,68,61,.18)"><span style="position:absolute;left:12px;bottom:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#16443D;background:rgba(251,249,243,.75);padding:3px 8px;border-radius:6px">/img/foto-01.jpg</span></div>
+      <div onClick="{{ openLightbox }}" data-label="foto 02" data-tone="#E2A38F" style="width:100%;height:200px;margin:0 0 18px;break-inside:avoid;display:inline-block;cursor:zoom-in;border-radius:14px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,#ecc3b5 0 10px,#e2a38f 10px 20px);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s" style-hover="transform:translateY(-4px);box-shadow:0 18px 40px rgba(22,68,61,.18)"><span style="position:absolute;left:12px;bottom:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#16443D;background:rgba(251,249,243,.78);padding:3px 8px;border-radius:6px">/img/foto-02.jpg</span></div>
+      <div onClick="{{ openLightbox }}" data-label="foto 03" data-tone="#2E8C7A" style="width:100%;height:320px;margin:0 0 18px;break-inside:avoid;display:inline-block;cursor:zoom-in;border-radius:14px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,#5fb6a4 0 10px,#3e9e8c 10px 20px);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s" style-hover="transform:translateY(-4px);box-shadow:0 18px 40px rgba(22,68,61,.18)"><span style="position:absolute;left:12px;bottom:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#FBF9F3;background:rgba(22,68,61,.5);padding:3px 8px;border-radius:6px">/img/foto-03.jpg</span></div>
+      <div onClick="{{ openLightbox }}" data-label="foto 04" data-tone="#9FE0D2" style="width:100%;height:230px;margin:0 0 18px;break-inside:avoid;display:inline-block;cursor:zoom-in;border-radius:14px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,#bfeae0 0 10px,#9fe0d2 10px 20px);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s" style-hover="transform:translateY(-4px);box-shadow:0 18px 40px rgba(22,68,61,.18)"><span style="position:absolute;left:12px;bottom:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#16443D;background:rgba(251,249,243,.78);padding:3px 8px;border-radius:6px">/img/foto-04.jpg</span></div>
+      <div onClick="{{ openLightbox }}" data-label="foto 05" data-tone="#7FD4C1" style="width:100%;height:300px;margin:0 0 18px;break-inside:avoid;display:inline-block;cursor:zoom-in;border-radius:14px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,#bfe7dd 0 10px,#7FD4C1 10px 20px);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s" style-hover="transform:translateY(-4px);box-shadow:0 18px 40px rgba(22,68,61,.18)"><span style="position:absolute;left:12px;bottom:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#16443D;background:rgba(251,249,243,.78);padding:3px 8px;border-radius:6px">/img/foto-05.jpg</span></div>
+      <div onClick="{{ openLightbox }}" data-label="foto 06" data-tone="#E2A38F" style="width:100%;height:215px;margin:0 0 18px;break-inside:avoid;display:inline-block;cursor:zoom-in;border-radius:14px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,#eec9bc 0 10px,#e2a38f 10px 20px);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s" style-hover="transform:translateY(-4px);box-shadow:0 18px 40px rgba(22,68,61,.18)"><span style="position:absolute;left:12px;bottom:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#16443D;background:rgba(251,249,243,.78);padding:3px 8px;border-radius:6px">/img/foto-06.jpg</span></div>
+      <div onClick="{{ openLightbox }}" data-label="foto 07" data-tone="#2E8C7A" style="width:100%;height:260px;margin:0 0 18px;break-inside:avoid;display:inline-block;cursor:zoom-in;border-radius:14px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,#5fb6a4 0 10px,#3e9e8c 10px 20px);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s" style-hover="transform:translateY(-4px);box-shadow:0 18px 40px rgba(22,68,61,.18)"><span style="position:absolute;left:12px;bottom:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#FBF9F3;background:rgba(22,68,61,.5);padding:3px 8px;border-radius:6px">/img/foto-07.jpg</span></div>
+    </div>
+  </section>
+
+  <!-- ============ VIDEO (opcional) ============ -->
+  <!-- 🎬 Para activar: reemplazá el placeholder por tu <iframe> o <video>. Ejemplo abajo. -->
+  <section data-reveal style="position:relative;z-index:3;padding:clamp(50px,9vw,110px) 24px;display:flex;justify-content:center">
+    <div style="width:100%;max-width:860px;text-align:center">
+      <div style="font-family:'Hanken Grotesk',sans-serif;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:#2E8C7A;font-weight:600;margin-bottom:28px">Un video para vos</div>
+      <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:radial-gradient(120% 120% at 50% 30%,#EAF4F0,#cfe9e1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border:1px solid rgba(46,140,122,.18)">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(251,249,243,.9);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(22,68,61,.16)"><span style="margin-left:5px;border-style:solid;border-width:11px 0 11px 18px;border-color:transparent transparent transparent #2E8C7A"></span></div>
+        <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#3a5f58">reemplazá por tu &lt;iframe&gt; de YouTube/Vimeo o &lt;video src="/video/..."&gt;</span>
+      </div>
+      <!--
+        EJEMPLO (descomentar y borrar el placeholder de arriba):
+        <iframe width="100%" style="aspect-ratio:16/9;border:0;border-radius:18px"
+                src="https://www.youtube.com/embed/TU_ID" allowfullscreen></iframe>
+      -->
+    </div>
+  </section>
+
+  <!-- ============ CIERRE ============ -->
+  <section data-reveal style="position:relative;z-index:3;padding:clamp(70px,12vw,150px) 24px clamp(90px,14vw,160px);text-align:center;background:linear-gradient(180deg,#EFF6F2 0%,#DCEFE8 100%);display:flex;flex-direction:column;align-items:center">
+    <p style="margin:0;max-width:620px;font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:clamp(28px,5.4vw,52px);line-height:1.25;color:#16443D;text-wrap:pretty">Que sea un año tan lindo como vos lo hacés todo.</p>
+    <button onClick="{{ repeat }}" style="margin-top:46px;cursor:pointer;border:none;border-radius:999px;padding:17px 38px;font-family:'Hanken Grotesk',sans-serif;font-size:15px;font-weight:600;color:#FBF9F3;background:linear-gradient(135deg,#2E8C7A,#16443D);box-shadow:0 12px 30px rgba(22,68,61,.18);transition:transform .35s cubic-bezier(.2,.7,.2,1),filter .35s" style-hover="transform:translateY(-3px) scale(1.03);filter:brightness(1.09)">repetir la magia ✦</button>
+    <div style="margin-top:60px;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.04em;color:#6b8a83">hecho con cariño · verde agua</div>
+  </section>
+
+  <!-- ============ LIGHTBOX ============ -->
+  <sc-if value="{{ lightbox }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeLightbox }}" style="position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:28px;background:rgba(16,54,47,.82);backdrop-filter:blur(8px);cursor:zoom-out;animation:gateRise .3s ease both">
+      <div style="position:relative;width:min(78vw,640px);height:min(72vh,640px);border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4);background:repeating-linear-gradient(135deg,#bfe7dd 0 14px,#9fe0d2 14px 28px);display:flex;align-items:flex-end">
+        <span style="margin:18px;font-family:ui-monospace,Menlo,monospace;font-size:13px;color:#16443D;background:rgba(251,249,243,.85);padding:5px 11px;border-radius:8px">{{ lightboxLabel }} · reemplazar en /img</span>
+      </div>
+      <button onClick="{{ closeLightbox }}" style="position:absolute;top:22px;right:22px;width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;font-size:20px;color:#16443D;background:rgba(251,249,243,.92);display:flex;align-items:center;justify-content:center">✕</button>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;enableBalloons&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Magia&quot;},&quot;enableConfetti&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Magia&quot;},&quot;musicVolume&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.55,&quot;min&quot;:0,&quot;max&quot;:1,&quot;step&quot;:0.05,&quot;unit&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Audio&quot;}}">
+class Component extends DCLogic {
+  state = { opened: false, muted: false, lightbox: null };
+
+  get reduced() {
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  componentDidMount() {
+    // Paleta de confeti/globos: familia verde agua + neutro + coral de acento
+    this.confettiColors = ['#7FD4C1', '#3E9E8C', '#9FE0D2', '#E2A38F', '#F4F0E6'];
+    // Revelado al hacer scroll: SOLO transform (la opacidad nunca baja -> el contenido
+    // jamás queda oculto si el navegador no anima). Se desactiva con reduced-motion.
+    if (this.reduced) return;
+    requestAnimationFrame(() => {
+      const els = document.querySelectorAll('[data-reveal]');
+      els.forEach((el) => {
+        el.style.transform = 'translateY(26px)';
+        el.style.transition = 'transform .9s cubic-bezier(.2,.7,.2,1)';
+      });
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            const t = e.target;
+            t.style.transform = 'none';
+            setTimeout(() => { t.style.transition = 'none'; t.style.transform = 'none'; }, 1000);
+            io.unobserve(t);
+          }
+        });
+      }, { threshold: 0.16 });
+      els.forEach((el) => io.observe(el));
+    });
+  }
+
+  // === El instante "tap → todo explota" ===
+  open = () => {
+    if (this.state.opened) return;
+    this.setState({ opened: true });
+
+    // 1. Música (autoplay desbloqueado por el gesto del usuario)
+    const a = document.getElementById('bg-audio');
+    const vol = this.props.musicVolume ?? 0.55;
+    if (a) {
+      a.volume = 0;
+      const p = a.play();
+      if (p && p.then) p.then(() => this.fade(a, vol, 900)).catch(() => {});
+    }
+
+    // 2. Confeti + globos + entrada del hero
+    if (this.reduced) {
+      this.heroInstant();
+      if (this.props.enableConfetti ?? true) this.gentleBurst();
+      return;
+    }
+    if (this.props.enableConfetti ?? true) { this.burst(); this.shower(2800); }
+    if (this.props.enableBalloons ?? true) this.balloons();
+    this.heroIn();
+  };
+
+  heroIn() {
+    // Blur-to-focus escalonado. Las palabras ya tienen opacity:1, así que solo
+    // animamos blur+desplazamiento -> nunca quedan invisibles.
+    document.querySelectorAll('[data-hero-word]').forEach((el, i) => {
+      el.style.animation = `heroRise .9s cubic-bezier(.2,.7,.2,1) ${i * 0.15 + 0.08}s both`;
+    });
+  }
+  heroInstant() { /* palabras ya visibles (opacity:1); sin animación */ }
+
+  burst() {
+    if (!window.confetti) return;
+    const colors = this.confettiColors;
+    window.confetti({ particleCount: 130, spread: 78, startVelocity: 42, origin: { y: 0.58 }, colors, scalar: 0.9 });
+    window.confetti({ particleCount: 55, angle: 60, spread: 55, origin: { x: 0, y: 0.62 }, colors });
+    window.confetti({ particleCount: 55, angle: 120, spread: 55, origin: { x: 1, y: 0.62 }, colors });
+  }
+  gentleBurst() {
+    if (!window.confetti) return;
+    window.confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 }, colors: this.confettiColors, scalar: 0.8 });
+  }
+  // Confeti fino cayendo durante un rato
+  shower(duration) {
+    if (!window.confetti) return;
+    const end = Date.now() + duration;
+    const colors = this.confettiColors;
+    const tick = () => {
+      window.confetti({ particleCount: 3, startVelocity: 0, ticks: 320, gravity: 0.42, scalar: 0.78,
+        drift: 0.4, origin: { x: Math.random(), y: -0.08 }, colors, shapes: ['circle'] });
+      if (Date.now() < end) requestAnimationFrame(tick);
+    };
+    tick();
+  }
+
+  // Globos con física simple subiendo/flotando
+  balloons() {
+    const layer = document.getElementById('balloon-layer');
+    if (!layer) return;
+    this.spawn(layer, 12);
+    let waves = 0;
+    this.bTimer = setInterval(() => {
+      if (waves++ > 5 || !this.state.opened) { clearInterval(this.bTimer); return; }
+      this.spawn(layer, 3);
+    }, 2700);
+  }
+  spawn(layer, count) {
+    const tones = ['#7FD4C1', '#9FE0D2', '#3E9E8C', '#E2A38F'];
+    for (let i = 0; i < count; i++) {
+      const b = document.createElement('div');
+      const size = 38 + Math.random() * 42;
+      const tone = tones[(Math.random() * tones.length) | 0];
+      const left = Math.random() * 100;
+      const dur = 9 + Math.random() * 7;
+      const delay = Math.random() * 1.6;
+      const sway = (Math.random() < 0.5 ? -1 : 1) * (8 + Math.random() * 14);
+      b.style.cssText = `position:absolute;left:${left}vw;bottom:-150px;width:${size}px;height:${size * 1.2}px;` +
+        `border-radius:50% 50% 48% 48%;background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.6),${tone});` +
+        `box-shadow:inset -6px -9px 16px rgba(0,0,0,.08);opacity:.92;--sway:${sway}px;` +
+        `animation:floatUp ${dur}s cubic-bezier(.42,0,.5,1) ${delay}s forwards`;
+      const str = document.createElement('div');
+      str.style.cssText = 'position:absolute;top:100%;left:50%;width:1px;height:42px;background:rgba(22,68,61,.28);transform:translateX(-50%)';
+      b.appendChild(str);
+      layer.appendChild(b);
+      setTimeout(() => b.remove(), (dur + delay) * 1000 + 300);
+    }
+  }
+
+  fade(a, target, ms) {
+    const start = a.volume, t0 = performance.now();
+    const step = (t) => {
+      const k = Math.min(1, (t - t0) / ms);
+      a.volume = start + (target - start) * k;
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  toggleMute = () => {
+    const a = document.getElementById('bg-audio');
+    if (!a) return;
+    a.muted = !a.muted;
+    this.setState({ muted: a.muted });
+  };
+
+  // "Repetir la magia"
+  repeat = () => {
+    if (this.reduced) { this.gentleBurst(); return; }
+    this.burst();
+    this.shower(1900);
+    if (this.props.enableBalloons ?? true) {
+      const layer = document.getElementById('balloon-layer');
+      if (layer) this.spawn(layer, 8);
+    }
+  };
+
+  openLightbox = (e) => {
+    const t = e.currentTarget;
+    this.setState({ lightbox: { label: t.dataset.label } });
+  };
+  closeLightbox = () => this.setState({ lightbox: null });
+
+  renderVals() {
+    return {
+      showGate: !this.state.opened,
+      opened: this.state.opened,
+      muted: this.state.muted,
+      notMuted: !this.state.muted,
+      open: this.open,
+      toggleMute: this.toggleMute,
+      repeat: this.repeat,
+      openLightbox: this.openLightbox,
+      closeLightbox: this.closeLightbox,
+      lightbox: this.state.lightbox,
+      lightboxLabel: this.state.lightbox ? this.state.lightbox.label : '',
+    };
+  }
+}
+</script>
+</body>
+</html>
